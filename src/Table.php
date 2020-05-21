@@ -98,11 +98,26 @@ class Table
      * @param string $id
      * @return mixed
      */
-    public function read(string $id)
+    public function read(string $id): Record
     {
-        return $this->client->send(
+        $response = $this->client->send(
             TableRequest::readRecords($this->tableName, $id)
         );
+
+        //validate Response occurred correctly
+        $result = json_decode($response->getBody()->getContents(), true);
+
+        $record = new Record();
+        $record->setId($result['id']);
+        $record->setCreatedTimeFromString($result['createdTime']);
+
+        foreach ($result['fields'] as $fieldKey => $fieldValue) {
+            $record->addField(
+                Field::createWith($fieldKey, $fieldValue)
+            );
+        }
+
+        return $record;
     }
 
     /**

@@ -99,11 +99,15 @@ class TableTest extends TestCase
      */
     public function testReadRecord(array $record): void
     {
-        $response = $this->table->read($record['records'][0]['id']);
+        $recordId = $record['records'][0]['id'];
+        $response = $this->table->read($recordId);
 
-        $result = json_decode((string)$response->getBody(), true);
+        $this->assertSame($recordId, $response->getId());
 
-        $this->assertSame($result, $record['records'][0]);
+
+//        $result = json_decode((string)$response->getBody(), true);
+//
+//        $this->assertSame($result, $record['records'][0]);
     }
 
     /**
